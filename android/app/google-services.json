@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "646257729571",
+    "project_id": "healamon-e04d1",
+    "storage_bucket": "healamon-e04d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:646257729571:android:836525e0add2a83a6a5196",
+        "android_client_info": {
+          "package_name": "com.mycompany.healamon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB_172vdm13EyG4yrjdYmtLOPnPwm1708"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
