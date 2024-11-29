@@ -38,7 +38,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).alternate,
+        backgroundColor: FlutterFlowTheme.of(context).secondary,
         body: SafeArea(
           top: true,
           child: Column(
@@ -53,48 +53,54 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                     color: Color(0x00FFFFFF),
                   ),
                   alignment: const AlignmentDirectional(0.0, 0.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Stack(
                     children: [
-                      Align(
-                        alignment: const AlignmentDirectional(0.0, 0.0),
-                        child: Text(
-                          'It is important to note that while this app offers valuable information and alternative options, it is not intended to replace professional medical advice or treatment. Always consult with a healthcare professional before making any changes to your medical regimen.',
-                          textAlign: TextAlign.center,
-                          style:
-                              FlutterFlowTheme.of(context).titleMedium.override(
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Align(
+                            alignment: const AlignmentDirectional(0.0, 0.0),
+                            child: Text(
+                              'It is important to note that while this app offers valuable information and alternative options, it is not intended to replace professional medical advice or treatment. Always consult with a healthcare professional before making any changes to your medical regimen.',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context)
+                                  .titleMedium
+                                  .override(
                                     fontFamily: 'Inter Tight',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
+                                    color:
+                                        FlutterFlowTheme.of(context).tertiary,
                                     letterSpacing: 0.0,
                                   ),
-                        ),
-                      ),
-                      FFButtonWidget(
-                        onPressed: () async {
-                          context.pushNamed('home');
-                        },
-                        text: 'Get Started',
-                        options: FFButtonOptions(
-                          height: 40.0,
-                          padding: const EdgeInsetsDirectional.fromSTEB(
-                              16.0, 0.0, 16.0, 0.0),
-                          iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 0.0, 0.0),
-                          color: FlutterFlowTheme.of(context).tertiary,
-                          textStyle:
-                              FlutterFlowTheme.of(context).titleSmall.override(
+                            ),
+                          ),
+                          FFButtonWidget(
+                            onPressed: () async {
+                              context.pushNamed('home');
+                            },
+                            text: 'Get Started',
+                            options: FFButtonOptions(
+                              height: 40.0,
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  16.0, 0.0, 16.0, 0.0),
+                              iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 0.0),
+                              color: FlutterFlowTheme.of(context).primary,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .titleSmall
+                                  .override(
                                     fontFamily: 'Inter Tight',
                                     color: Colors.white,
                                     letterSpacing: 0.0,
                                   ),
-                          elevation: 0.0,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                              elevation: 0.0,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ].divide(const SizedBox(height: 40.0)),
                       ),
-                    ].divide(const SizedBox(height: 40.0)),
+                    ],
                   ),
                 ),
               ),

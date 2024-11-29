@@ -1,14 +1,14 @@
 import '/backend/backend.dart';
+import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_autocomplete_options_list.dart';
 import '/flutter_flow/flutter_flow_choice_chips.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:provider/provider.dart';
-import 'package:text_search/text_search.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'home_model.dart';
 export 'home_model.dart';
 
@@ -24,23 +24,41 @@ class HomeWidget extends StatefulWidget {
   State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-class _HomeWidgetState extends State<HomeWidget> {
+class _HomeWidgetState extends State<HomeWidget> with TickerProviderStateMixin {
   late HomeModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final animationsMap = <String, AnimationInfo>{};
 
   @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomeModel());
 
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      FFAppState().timerRunning = false;
-      safeSetState(() {});
-    });
-
     _model.searchsymptomTextController ??= TextEditingController();
+
+    animationsMap.addAll({
+      'drawerOnActionTriggerAnimation': AnimationInfo(
+        trigger: AnimationTrigger.onActionTrigger,
+        applyInitialState: true,
+        effectsBuilder: () => [
+          MoveEffect(
+            curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 600.0.ms,
+            begin: const Offset(0.0, 0.0),
+            end: const Offset(0.0, 0.0),
+          ),
+        ],
+      ),
+    });
+    setupAnimations(
+      animationsMap.values.where((anim) =>
+          anim.trigger == AnimationTrigger.onActionTrigger ||
+          !anim.applyInitialState),
+      this,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -54,13 +72,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return StreamBuilder<List<HerbalplantsRecord>>(
-      stream: queryHerbalplantsRecord(
-        queryBuilder: (herbalplantsRecord) =>
-            herbalplantsRecord.orderBy('Name'),
-      ),
+      stream: queryHerbalplantsRecord(),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -456,6 +469,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ],
                 ),
               ),
+            ).animateOnActionTrigger(
+              animationsMap['drawerOnActionTriggerAnimation']!,
             ),
             appBar: AppBar(
               backgroundColor: Colors.white,
@@ -496,7 +511,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                         if (textEditingValue.text == '') {
                           return const Iterable<String>.empty();
                         }
-                        return <String>[].where((option) {
+                        return ['Headaches', 'Fever', 'Cough', 'Toothaches']
+                            .where((option) {
                           final lowercaseOption = option.toLowerCase();
                           return lowercaseOption
                               .contains(textEditingValue.text.toLowerCase());
@@ -545,24 +561,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           onChanged: (_) => EasyDebounce.debounce(
                             '_model.searchsymptomTextController',
                             const Duration(milliseconds: 25),
-                            () async {
-                              safeSetState(() {
-                                _model.simpleSearchResults = TextSearch(
-                                  homeHerbalplantsRecordList
-                                      .map(
-                                        (record) => TextSearchItem.fromTerms(
-                                            record, [record.name]),
-                                      )
-                                      .toList(),
-                                )
-                                    .search(
-                                        _model.searchsymptomTextController.text)
-                                    .map((r) => r.object)
-                                    .toList();
-                              });
-                              FFAppState().searchactive = true;
-                              safeSetState(() {});
-                            },
+                            () => safeSetState(() {}),
                           ),
                           autofocus: false,
                           obscureText: false,
@@ -574,13 +573,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   fontFamily: 'Inter',
                                   letterSpacing: 0.0,
                                 ),
-                            hintText: 'Search herbal plants',
+                            hintText: 'Search symptom',
                             hintStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(
                                   fontFamily: 'Inter',
                                   color: FlutterFlowTheme.of(context)
                                       .primaryBackground,
+                                  letterSpacing: 0.0,
+                                ),
+                            errorStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  color: FlutterFlowTheme.of(context).error,
                                   letterSpacing: 0.0,
                                 ),
                             enabledBorder: OutlineInputBorder(
@@ -682,15 +688,20 @@ class _HomeWidgetState extends State<HomeWidget> {
                           const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
                       child: FlutterFlowChoiceChips(
                         options: const [
-                          ChipData('All'),
-                          ChipData('Swelling'),
-                          ChipData('Flu'),
-                          ChipData('Sorethroat'),
-                          ChipData('stomach ache'),
-                          ChipData('migraine'),
-                          ChipData('Severe pain'),
-                          ChipData('Nausea'),
-                          ChipData('Vomiting')
+                          ChipData('General '),
+                          ChipData('Neurological '),
+                          ChipData('Cardiovascular '),
+                          ChipData('Respiratory '),
+                          ChipData('Gastrointestinal '),
+                          ChipData('Musculoskeletal '),
+                          ChipData('Dermatological '),
+                          ChipData('Psychological'),
+                          ChipData('Endocrine '),
+                          ChipData('Genitourinary '),
+                          ChipData('Hematological '),
+                          ChipData('Allergic '),
+                          ChipData('Visual '),
+                          ChipData('Ear, Nose, and Throat')
                         ],
                         onChanged: (val) => safeSetState(
                             () => _model.choiceChipsValue1 = val?.firstOrNull),
@@ -726,11 +737,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                         chipSpacing: 12.0,
                         rowSpacing: 8.0,
                         multiselect: false,
-                        initialized: _model.choiceChipsValue1 != null,
                         alignment: WrapAlignment.start,
                         controller: _model.choiceChipsValueController1 ??=
                             FormFieldController<List<String>>(
-                          ['All'],
+                          [],
                         ),
                         wrapped: false,
                       ),
@@ -740,33 +750,71 @@ class _HomeWidgetState extends State<HomeWidget> {
                     thickness: 2.0,
                     color: Color(0xFFD6DDE2),
                   ),
-                  if (!FFAppState().searchactive)
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                      child: Builder(
-                        builder: (context) {
-                          final plants = homeHerbalplantsRecordList.toList();
+                  Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
+                    child: Builder(
+                      builder: (context) {
+                        final listItem =
+                            homeHerbalplantsRecordList.map((e) => e).toList();
 
-                          return InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              FFAppState().searchactive = false;
-                              safeSetState(() {});
-                            },
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: plants.length,
-                              itemBuilder: (context, plantsIndex) {
-                                final plantsItem = plants[plantsIndex];
-                                return Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      8.0, 8.0, 8.0, 8.0),
+                        return ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: listItem.length,
+                          itemBuilder: (context, listItemIndex) {
+                            final listItemItem = listItem[listItemIndex];
+                            return Visibility(
+                              visible: functions.symptomSearch2(
+                                      _model.searchsymptomTextController.text,
+                                      listItemItem.symptoms.toList()) ==
+                                  false,
+                              child: Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    8.0, 8.0, 8.0, 8.0),
+                                child: InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    context.pushNamed(
+                                      'details',
+                                      queryParameters: {
+                                        'name': serializeParam(
+                                          listItemItem,
+                                          ParamType.Document,
+                                        ),
+                                        'image': serializeParam(
+                                          listItemItem.image,
+                                          ParamType.String,
+                                        ),
+                                        'synonym': serializeParam(
+                                          listItemItem.synonym,
+                                          ParamType.String,
+                                        ),
+                                        'description': serializeParam(
+                                          listItemItem.description,
+                                          ParamType.String,
+                                        ),
+                                        'benefits': serializeParam(
+                                          listItemItem.benefits,
+                                          ParamType.String,
+                                        ),
+                                        'useandpre': serializeParam(
+                                          listItemItem.usesandPreparation,
+                                          ParamType.String,
+                                        ),
+                                        'sideeffects': serializeParam(
+                                          listItemItem.sideeffects,
+                                          ParamType.String,
+                                        ),
+                                      }.withoutNulls,
+                                      extra: <String, dynamic>{
+                                        'name': listItemItem,
+                                      },
+                                    );
+                                  },
                                   child: Container(
                                     width: 100.0,
                                     height: 100.0,
@@ -781,12 +829,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       ),
                                       shape: BoxShape.rectangle,
                                     ),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {},
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -798,7 +842,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               borderRadius:
                                                   BorderRadius.circular(8.0),
                                               child: Image.network(
-                                                plantsItem.image,
+                                                listItemItem.image,
                                                 width: 150.0,
                                                 height: 150.0,
                                                 fit: BoxFit.cover,
@@ -816,7 +860,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  plantsItem.name,
+                                                  listItemItem.name,
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyMedium
@@ -826,7 +870,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                       ),
                                                 ),
                                                 Text(
-                                                  plantsItem.synonym,
+                                                  listItemItem.synonym,
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyMedium
@@ -844,126 +888,14 @@ class _HomeWidgetState extends State<HomeWidget> {
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
-                  if (FFAppState().searchactive)
-                    Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 8.0, 0.0),
-                      child: Builder(
-                        builder: (context) {
-                          final plants = _model.simpleSearchResults
-                              .where((e) => plants.isNotEmpty)
-                              .toList();
-
-                          return InkWell(
-                            splashColor: Colors.transparent,
-                            focusColor: Colors.transparent,
-                            hoverColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onTap: () async {
-                              FFAppState().searchactive = false;
-                              safeSetState(() {});
-                            },
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: plants.length,
-                              itemBuilder: (context, plantsIndex) {
-                                final plantsItem = plants[plantsIndex];
-                                return Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      8.0, 8.0, 8.0, 8.0),
-                                  child: Container(
-                                    width: 100.0,
-                                    height: 100.0,
-                                    decoration: BoxDecoration(
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(8.0),
-                                        bottomRight: Radius.circular(8.0),
-                                        topLeft: Radius.circular(8.0),
-                                        topRight: Radius.circular(8.0),
-                                      ),
-                                      shape: BoxShape.rectangle,
-                                    ),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {},
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 0.0, 15.0, 0.0),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              child: Image.network(
-                                                plantsItem.image,
-                                                width: 150.0,
-                                                height: 150.0,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment:
-                                                const AlignmentDirectional(0.0, 0.0),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  plantsItem.name,
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                                ),
-                                                Text(
-                                                  plantsItem.synonym,
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                        fontStyle:
-                                                            FontStyle.italic,
-                                                      ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                  ),
                 ],
               ),
             ),

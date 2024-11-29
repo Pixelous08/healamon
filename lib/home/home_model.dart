@@ -1,4 +1,3 @@
-import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
 import 'home_widget.dart' show HomeWidget;
@@ -13,7 +12,6 @@ class HomeModel extends FlutterFlowModel<HomeWidget> {
   TextEditingController? searchsymptomTextController;
   String? searchsymptomSelectedOption;
   String? Function(BuildContext, String?)? searchsymptomTextControllerValidator;
-  List<HerbalplantsRecord> simpleSearchResults = [];
   // State field(s) for ChoiceChips widget.
   FormFieldController<List<String>>? choiceChipsValueController1;
   String? get choiceChipsValue1 =>

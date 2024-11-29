@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -14,20 +13,12 @@ class FFAppState extends ChangeNotifier {
     _instance = FFAppState._internal();
   }
 
-  Future initializePersistedState() async {
-    prefs = await SharedPreferences.getInstance();
-    _safeInit(() {
-      _swipableListIndex =
-          prefs.getString('ff_swipableListIndex') ?? _swipableListIndex;
-    });
-  }
+  Future initializePersistedState() async {}
 
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
   }
-
-  late SharedPreferences prefs;
 
   bool _searchactive = false;
   bool get searchactive => _searchactive;
@@ -64,57 +55,38 @@ class FFAppState extends ChangeNotifier {
     searchactive2.insert(index, value);
   }
 
-  bool _timerRunning = false;
-  bool get timerRunning => _timerRunning;
-  set timerRunning(bool value) {
-    _timerRunning = value;
-  }
-
-  String _swipableListIndex = '';
-  String get swipableListIndex => _swipableListIndex;
-  set swipableListIndex(String value) {
-    _swipableListIndex = value;
-    prefs.setString('ff_swipableListIndex', value);
-  }
-
-  List<String> _searchQuery = [];
-  List<String> get searchQuery => _searchQuery;
-  set searchQuery(List<String> value) {
+  String _searchQuery = '';
+  String get searchQuery => _searchQuery;
+  set searchQuery(String value) {
     _searchQuery = value;
   }
 
-  void addToSearchQuery(String value) {
-    searchQuery.add(value);
+  List<String> _filteredPlants = [];
+  List<String> get filteredPlants => _filteredPlants;
+  set filteredPlants(List<String> value) {
+    _filteredPlants = value;
   }
 
-  void removeFromSearchQuery(String value) {
-    searchQuery.remove(value);
+  void addToFilteredPlants(String value) {
+    filteredPlants.add(value);
   }
 
-  void removeAtIndexFromSearchQuery(int index) {
-    searchQuery.removeAt(index);
+  void removeFromFilteredPlants(String value) {
+    filteredPlants.remove(value);
   }
 
-  void updateSearchQueryAtIndex(
+  void removeAtIndexFromFilteredPlants(int index) {
+    filteredPlants.removeAt(index);
+  }
+
+  void updateFilteredPlantsAtIndex(
     int index,
     String Function(String) updateFn,
   ) {
-    searchQuery[index] = updateFn(_searchQuery[index]);
+    filteredPlants[index] = updateFn(_filteredPlants[index]);
   }
 
-  void insertAtIndexInSearchQuery(int index, String value) {
-    searchQuery.insert(index, value);
+  void insertAtIndexInFilteredPlants(int index, String value) {
+    filteredPlants.insert(index, value);
   }
-}
-
-void _safeInit(Function() initializeField) {
-  try {
-    initializeField();
-  } catch (_) {}
-}
-
-Future _safeInitAsync(Function() initializeField) async {
-  try {
-    await initializeField();
-  } catch (_) {}
 }

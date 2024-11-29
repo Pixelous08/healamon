@@ -52,7 +52,7 @@ class _SplashWidgetState extends State<SplashWidget> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).alternate,
+        backgroundColor: FlutterFlowTheme.of(context).secondary,
         body: SafeArea(
           top: true,
           child: Column(

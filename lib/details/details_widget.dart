@@ -8,13 +8,13 @@ export 'details_model.dart';
 class DetailsWidget extends StatefulWidget {
   const DetailsWidget({
     super.key,
-    required this.name,
+    this.name,
     required this.image,
     required this.synonym,
     required this.description,
     required this.benefits,
-    required this.usesandpreparation,
-    required this.possiblesideeffects,
+    required this.useandpre,
+    required this.sideeffects,
   });
 
   final HerbalplantsRecord? name;
@@ -22,8 +22,8 @@ class DetailsWidget extends StatefulWidget {
   final String? synonym;
   final String? description;
   final String? benefits;
-  final String? usesandpreparation;
-  final String? possiblesideeffects;
+  final String? useandpre;
+  final String? sideeffects;
 
   @override
   State<DetailsWidget> createState() => _DetailsWidgetState();
@@ -101,10 +101,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
-                        valueOrDefault<String>(
-                          widget.name?.image,
-                          'Image',
-                        ),
+                        widget.image!,
                         width: MediaQuery.sizeOf(context).width * 1.0,
                         height: 200.0,
                         fit: BoxFit.cover,
@@ -139,7 +136,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                                 0.0, 8.0, 0.0, 8.0),
                             child: Text(
                               valueOrDefault<String>(
-                                widget.name?.synonym,
+                                widget.synonym,
                                 'synonym',
                               ),
                               style: FlutterFlowTheme.of(context)
@@ -156,7 +153,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                           ),
                           Text(
                             valueOrDefault<String>(
-                              widget.name?.description,
+                              widget.description,
                               'description',
                             ),
                             style: FlutterFlowTheme.of(context)
@@ -192,7 +189,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                             child: Text(
                               valueOrDefault<String>(
                                 widget.benefits,
-                                'Benefits',
+                                'benefits',
                               ),
                               style: FlutterFlowTheme.of(context)
                                   .labelMedium
@@ -224,8 +221,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                           ),
                           Text(
                             valueOrDefault<String>(
-                              widget.usesandpreparation,
-                              'usesandpreparation',
+                              widget.useandpre,
+                              'useandpre',
                             ),
                             style: FlutterFlowTheme.of(context)
                                 .labelLarge
@@ -256,8 +253,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                           ),
                           Text(
                             valueOrDefault<String>(
-                              widget.possiblesideeffects,
-                              'possiblesideeffects',
+                              widget.sideeffects,
+                              'sideeffects',
                             ),
                             style: FlutterFlowTheme.of(context)
                                 .labelLarge

@@ -56,7 +56,7 @@ dependencies:
   path_provider_foundation: 2.4.0
   path_provider_linux: 2.2.1
   path_provider_platform_interface: 2.1.2
-  path_provider_windows: 2.2.1
+  path_provider_windows: 2.3.0
   plugin_platform_interface: 2.1.8
   provider: 6.1.2
   shared_preferences: 2.3.2
@@ -70,7 +70,6 @@ dependencies:
   sqflite_common: 2.5.4+3
   stream_transform: 2.1.0
   substring_highlight: 1.0.33
-  text_search: 1.0.1
   timeago: 3.6.1
   url_launcher: 6.3.0
   url_launcher_android: 6.3.10
@@ -104,7 +103,7 @@ flutter_launcher_icons:
   web:
     generate: true
   image_path: 'assets/images/app_launcher_icon.png'
-  adaptive_icon_background: '#009ad495'
+  adaptive_icon_background: 'assets/images/adaptive_background_icon.png'
   adaptive_icon_foreground: 'assets/images/adaptive_foreground_icon.png'
 
 

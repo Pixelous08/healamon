@@ -113,12 +113,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'benefits',
               ParamType.String,
             ),
-            usesandpreparation: params.getParam(
-              'usesandpreparation',
+            useandpre: params.getParam(
+              'useandpre',
               ParamType.String,
             ),
-            possiblesideeffects: params.getParam(
-              'possiblesideeffects',
+            sideeffects: params.getParam(
+              'sideeffects',
               ParamType.String,
             ),
           ),
